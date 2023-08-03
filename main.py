@@ -7,83 +7,87 @@ def command_parser(user_input):
             else:
                 return list[0], list[1:]
 
+
+
+def input_error(func):
+    def inner(command):
+        if inner == func_to_show_all or inner == func_to_hello or inner == func_to_exit:
+            try:
+                return func(command)
+            except TypeError:
+                return "You wrote wrong command, please, try again!"
+        elif inner == func_to_add or inner == func_to_change:
+            try:
+                return func(command)
+            except IndexError:
+                return "Give me name and phone please after command."
+        elif inner == func_to_phone:
+            try:
+                return func(command)
+            except IndexError:
+                return "Enter user name after command."
+            except KeyError:
+                return "You don't have this contact."
+    return inner
+        
+
+@input_error
+def func_to_show_all(data):
+    if not data:
+        return INFO_ABOUT_USERS
+    else:
+        raise TypeError
+
+@input_error
+def func_to_phone(data):
+    if len(data) == 1:
+        if data[0].title() in INFO_ABOUT_USERS:
+            return f"Number for contact: {data[0].title()} is: {INFO_ABOUT_USERS[data[0].title()]}"
+        else:
+            raise KeyError
+    else:
+        raise IndexError
+
+
+@input_error
+def func_to_add(data):
+    if len(data) == 2:
+        INFO_ABOUT_USERS[data[0].title()] = data[1]
+        return f"Your name: {data[0].title()} and phone: {data[1]} was saved."
+    else:
+        raise IndexError
+
+@input_error
+def func_to_change(data):
+    if len(data) == 2:
+        INFO_ABOUT_USERS[data[0].title()] = data[1]
+        return f"You changed a phone. Contact: {data[0]} has a new phone: {data[1]}"
+    else:
+        raise IndexError
+
+@input_error
+def func_to_hello(data):
+    if not data:
+        return "How can I help you?"
+    else:
+        raise TypeError
+
+@input_error
+def func_to_exit(data):
+    if not data:
+        global active_bot
+        active_bot = False
+        return "Good bye!"
+    else:
+        raise TypeError
+
+
 INFO_ABOUT_USERS = {}
+active_bot = True
+
 def main():
-    active_bot = True
+    global active_bot
     while active_bot:
-        global INFO_ABOUT_USERS
-        
-        def input_error(func):
-            def inner(command):
-                if inner == func_to_show_all or inner == func_to_hello or inner == func_to_exit:
-                    try:
-                        return func(command)
-                    except TypeError:
-                        return "You wrote wrong command, please, try again!"
-                elif inner == func_to_add or inner == func_to_change:
-                    try:
-                        return func(command)
-                    except IndexError:
-                        return "Give me name and phone please after command."
-                elif inner == func_to_phone:
-                    try:
-                        return func(command)
-                    except IndexError:
-                        return "Enter user name after command."
-                    except KeyError:
-                        return "You don't have this contact."
-            return inner
-        
-
-        @input_error
-        def func_to_show_all(data):
-             if not data:
-                return INFO_ABOUT_USERS
-             else:
-                  raise TypeError
-
-        @input_error
-        def func_to_phone(data):
-            if len(data) == 1:
-                if data[0].title() in INFO_ABOUT_USERS:
-                    return f"Number for contact: {data[0].title()} is: {INFO_ABOUT_USERS[data[0].title()]}"
-                else:
-                    raise KeyError
-            else:
-                raise IndexError
-
-
-        @input_error
-        def func_to_add(data):
-             if len(data) == 2:
-                INFO_ABOUT_USERS[data[0].title()] = data[1]
-                return f"Your name: {data[0].title()} and phone: {data[1]} was saved."
-             else:
-                raise IndexError
-
-        @input_error
-        def func_to_change(data):
-             if len(data) == 2:
-                INFO_ABOUT_USERS[data[0].title()] = data[1]
-                return f"You changed a phone. Contact: {data[0]} has a new phone: {data[1]}"
-             else:
-                raise IndexError
-
-        @input_error
-        def func_to_hello(data):
-             if not data:
-                return "How can I help you?"
-             else:
-                  raise TypeError
-
-        @input_error
-        def func_to_exit(data):
-            if not data:
-                nonlocal active_bot
-                active_bot = False
-                return "Good bye!"
-            else:
-                  raise TypeError
             
 
         DICT = {
